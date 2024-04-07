@@ -1,4 +1,4 @@
-FROM python:3.11.9-alpine3.19
+FROM pandas/pandas
 
 ENV APP /app
 

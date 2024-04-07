@@ -31,8 +31,8 @@ RUN python3 -m pip install --no-cache-dir -r $APP_HOME/requirements.txt
 ## Build phase
 RUN python3 $APP_HOME/train.py
 
-RUN chmod +x $APP_HOME/entrypoint.sh
+RUN chmod +x $APP_HOME/test.py
 
 EXPOSE 80
 
-ENTRYPOINT $APP_HOME/entrypoint.sh
+ENTRYPOINT python3 $APP_HOME/test.py

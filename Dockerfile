@@ -1,15 +1,38 @@
-FROM pandas/pandas
+FROM ubuntu:22.04
 
-ENV APP /app
+ENV APP_HOME /app
 
-WORKDIR $APP
+WORKDIR $APP_HOME
 
-COPY . $APP
+COPY . $APP_HOME
 
-RUN python3 -m pip install --no-cache-dir -r $APP/requirements.txt
+# RUN apt-get update && apt-get install -y software-properties-common gcc && \
+#     add-apt-repository -y ppa:deadsnakes/ppa
 
-RUN python3 $APP/train.py
+# RUN apt-get update && apt-get install -y python3.11 python3-distutils python3-pip python3-apt
 
-RUN chmod +x $APP/test.py
+# Set non-interactive frontend
+ENV DEBIAN_FRONTEND=noninteractive
 
-ENTRYPOINT $APP/test.py
+# Install dependencies including tzdata
+RUN apt-get update && \
+    apt-get install -y \
+    software-properties-common gcc && \
+    add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y \
+    python3.11 python3-distutils python3-pip python3-apt
+
+# Reset non-interactive frontend
+ENV DEBIAN_FRONTEND=
+
+RUN python3 -m pip install --no-cache-dir -r $APP_HOME/requirements.txt
+
+## Build phase
+RUN python3 $APP_HOME/train.py
+
+RUN chmod +x $APP_HOME/test.py
+
+EXPOSE 80
+
+ENTRYPOINT python3 $APP_HOME/test.py
